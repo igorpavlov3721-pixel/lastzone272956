@@ -21,7 +21,6 @@
             touch-action: manipulation;
             user-select: none;
             -webkit-user-select: none;
-            /* Убирает синее выделение при клике на мобилках */
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -51,7 +50,6 @@
             padding: 12px 15px;
             border-radius: 8px;
             cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
         }
 
         .overlay {
@@ -61,7 +59,7 @@
             background: #0a0a0a;
             z-index: 200;
             transition: 0.3s ease-in-out;
-            overflow-y: auto; /* Позволяет листать, если текст большой */
+            overflow-y: auto;
             padding: 20px;
             box-sizing: border-box;
             display: flex;
@@ -72,7 +70,7 @@
         .overlay.active { left: 0; }
 
         .close-overlay {
-            position: sticky; /* Чтобы крестик не уезжал при скролле */
+            position: sticky;
             top: 0;
             align-self: flex-end;
             font-size: 2.5rem;
@@ -87,7 +85,7 @@
         .overlay-content { 
             max-width: 600px; 
             width: 100%; 
-            padding-bottom: 50px; /* Отступ снизу для удобства */
+            padding-bottom: 50px;
         }
 
         .overlay-header { 
@@ -108,7 +106,7 @@
             font-size: 1rem; 
             line-height: 1.6; 
             border-radius: 0 4px 4px 0;
-            word-wrap: break-word; /* Перенос длинных слов */
+            word-wrap: break-word;
         }
 
         h1 {
@@ -155,6 +153,7 @@
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
         .info-block { text-align: center; margin-bottom: 20px; color: #888; z-index: 2; }
+        .server-desc { font-size: 0.9rem; margin-bottom: 10px; color: #bbb; text-transform: uppercase; letter-spacing: 1px; }
         
         .copy-btn {
             background: #1a1a1a;
@@ -168,13 +167,23 @@
             text-transform: uppercase;
             font-size: 0.9rem;
             transition: 0.2s;
-            -webkit-tap-highlight-color: transparent;
         }
 
         .copy-btn:active { transform: scale(0.95); border-color: #ff4040; }
         .copy-btn strong { color: #ff4040; }
 
         .section-title { font-size: 1.5rem; margin: 40px 0 20px; color: #ffffff; z-index: 2; text-transform: uppercase; letter-spacing: 3px; }
+
+        .video-container {
+            width: 92%;
+            max-width: 560px;
+            aspect-ratio: 16/9;
+            z-index: 2;
+            border: 2px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
 
         .buttons-container {
             display: grid;
@@ -201,10 +210,8 @@
             display: flex; justify-content: space-between; align-items: center;
             cursor: pointer;
             transition: 0.3s;
-            -webkit-tap-highlight-color: transparent;
         }
 
-        .btn:hover { border-color: #444; }
         .btn.selected { border-color: #ff4040; box-shadow: 0 0 10px rgba(255, 64, 64, 0.3); }
 
         .rank-info { display: flex; align-items: center; gap: 12px; pointer-events: none; }
@@ -228,11 +235,20 @@
             padding: 15px; border-radius: 8px; text-decoration: none; font-weight: bold;
             display: flex; align-items: center; justify-content: center; gap: 10px;
             color: white; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1);
-            -webkit-tap-highlight-color: transparent;
         }
 
         .tg { background-color: #0088cc; }
         .vk { background-color: #0077ff; }
+        .yt { background-color: #ff0000; }
+
+        .donate-info {
+            text-align: center;
+            margin-top: 15px;
+            color: #888;
+            font-size: 0.9rem;
+            z-index: 2;
+        }
+        .donate-info strong { color: #ff4040; }
 
         footer { margin-top: auto; padding: 30px 0; color: #444; z-index: 2; font-size: 0.7rem; letter-spacing: 2px; }
     </style>
@@ -279,19 +295,19 @@
     </h1>
 
     <div class="status-box">
+        <div class="server-desc">Сервер зомби апокалипсис | Bedrock Edition</div>
         <div id="online-ui" class="status-online"><div class="indicator"></div> Активен</div>
         <div id="offline-ui" class="status-offline"><div class="indicator"></div> Оффлайн</div>
-        <div id="player-count" style="font-size: 0.9rem; margin-top: 5px; color: #666;">Синхронизация...</div>
+        <div id="player-count" style="font-size: 0.9rem; margin-top: 5px; color: #666;">Версия: 1.20+</div>
     </div>
 
     <div class="info-block">
-        <button class="copy-btn" onclick="copyText(this, 'play.lastzone.online', 'IP')">IP: <strong>play.lastzone.online</strong></button>
-        <button class="copy-btn" onclick="copyText(this, '25629', 'PORT')">PORT: <strong>25629</strong></button>
+        <button class="copy-btn" onclick="copyText('play.lastzone.online', this)">IP: <strong>play.lastzone.online</strong></button>
+        <button class="copy-btn" onclick="copyText('25629', this)">PORT: <strong>25629</strong></button>
     </div>
 
     <div class="section-title">Ранги</div>
     <div class="buttons-container">
-        
         <div class="btn" onclick="openRank(this, 'Закаленный', 'тест<br>аааа')">
             <div class="rank-info"><div class="hex-icon"><i class="fas fa-minus"></i></div><div class="rank-name">Закаленный</div></div>
             <span class="price">25 ₽</span>
@@ -338,7 +354,7 @@
             <span class="price">750 ₽</span>
         </div>
 
-        <div class="btn" onclick="openRank(this, 'Бессмертный', 'БЕССМЕРТНЫЙ — ЭТО ВЫСШИЙ РАНГ. Тут может быть очень длинный текст с перечислением всех возможностей, команд и преимуществ. Благодаря обновленному коду, меню будет прокручиваться, если текст не влезает в экран.')">
+        <div class="btn" onclick="openRank(this, 'Бессмертный', 'БЕССМЕРТНЫЙ — ЭТО ВЫСШИЙ РАНГ.')">
             <div class="rank-info">
                 <div class="hex-icon">
                     <div style="display:flex; flex-direction:column; align-items:center; line-height:0.8">
@@ -350,12 +366,19 @@
             </div>
             <span class="price">1000 ₽</span>
         </div>
+    </div>
 
+    <div class="donate-info">Покупка доната через ТГ/ВК <strong>@clop_v_posteli</strong></div>
+
+    <div class="section-title">Видео</div>
+    <div class="video-container">
+        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/ayDlAzmIwnA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
     </div>
 
     <div class="social-container">
         <a href="https://t.me/lastzone_mcbe" class="social-btn tg"><i class="fab fa-telegram-plane"></i> ТЕЛЕГРАМ</a>
         <a href="https://vk.com/lastzone_mcbe" class="social-btn vk"><i class="fab fa-vk"></i> ВК ГРУППА</a>
+        <a href="https://youtu.be/ayDlAzmIwnA" class="social-btn yt"><i class="fab fa-youtube"></i> YOUTUBE</a>
     </div>
 
     <footer>LASTZONE PROJECT @2023-2026</footer>
@@ -368,7 +391,6 @@
         function openRank(element, name, text) {
             document.querySelectorAll('.btn').forEach(b => b.classList.remove('selected'));
             element.classList.add('selected');
-
             document.getElementById('rank-header').innerText = name;
             document.getElementById('rank-text').innerHTML = text;
             toggleOverlay('rank-menu');
@@ -379,13 +401,23 @@
             document.querySelectorAll('.btn').forEach(b => b.classList.remove('selected'));
         }
 
-        function copyText(btn, text, label) {
-            navigator.clipboard.writeText(text);
-            const originalText = btn.innerHTML;
-            btn.innerHTML = "СКОПИРОВАНО!";
-            setTimeout(() => {
-                btn.innerHTML = originalText;
-            }, 1500);
+        // Универсальная функция копирования
+        function copyText(text, btn) {
+            const el = document.createElement('textarea');
+            el.value = text;
+            el.setAttribute('readonly', '');
+            el.style.position = 'absolute';
+            el.style.left = '-9999px';
+            document.body.appendChild(el);
+            el.select();
+            const success = document.execCommand('copy');
+            document.body.removeChild(el);
+            
+            if (success) {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = "СКОПИРОВАНО!";
+                setTimeout(() => { btn.innerHTML = originalText; }, 1500);
+            }
         }
 
         const container = document.getElementById('rain-container');
@@ -420,5 +452,6 @@
         setInterval(updateStatus, 30000);
     </script>
 </body>
-    </html>
-    
+</html>
+
+
